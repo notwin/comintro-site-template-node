@@ -25,3 +25,37 @@ Express + PostgreSQL(`pg`)の小さなひな形です。`<プレフィックス>
 ローカルで試す場合: `DATABASE_URL=postgres://… npm start`
 
 詳しい説明: https://portal.com-intro.com/dev/docs/node
+
+中国語ドキュメント: https://portal.com-intro.com/dev/docs/zh/node
+
+---
+
+## 中文
+
+# COM INTRO 站点模板(Node 应用)
+
+基于 Express + PostgreSQL(`pg`)的小型模板,可在 `<前缀>.com-intro.com` 上运行。
+
+### 开始使用
+
+1. 在本页点击 **「Use this template」**,创建你自己的仓库。
+2. 在 portal(https://portal.com-intro.com/dev/)以类型 **「Node アプリ」(Node 应用)** 创建站点(如需使用数据库,请同时选择「数据库」)。设置码只会显示一次。
+3. 在克隆下来的仓库文件夹中执行 `npm install`。添加或更改依赖后,请同时提交 `package-lock.json`(workflow 使用 `npm ci`)。
+4. 在同一文件夹中执行下面的命令并粘贴设置码(提示信息可用 `COMINTRO_LANG=zh` 切换为中文)。
+   ```
+   npx comintro init
+   ```
+5. 执行 `git commit && git push`,Actions 会构建并部署。
+
+`.github/workflows/comintro.yml` 由 `npx comintro init` 生成,因此本模板中不包含。`Dockerfile` 由 workflow 自动生成(请不要自己放置)。
+
+### 结构
+
+- `server.js` — `npm start`。启动时先执行迁移(创建 `messages` 表),然后监听 `$PORT`。`GET /` 返回 200。
+- `db.js` — 连接与迁移。没有 `DATABASE_URL` 时会输出日志并仅停用数据库功能(应用仍会启动)。
+- `job.js` — `npm run job`。可登记到 portal「定期执行」的示例(删除 30 天前的行)。
+- `GET /messages` / `POST /messages` — 读写该表的示例。
+
+本地试用: `DATABASE_URL=postgres://… npm start`
+
+详细说明: https://portal.com-intro.com/dev/docs/zh/node
