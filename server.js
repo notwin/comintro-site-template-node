@@ -1,4 +1,5 @@
 'use strict';
+const crypto = require('crypto');
 const express = require('express');
 const { pool, migrate } = require('./db');
 
@@ -10,7 +11,18 @@ app.get('/', (req, res) => {
   res.type('text/plain; charset=utf-8').send('COM INTRO Node アプリが動いています。/messages を見てください。\n');
 });
 
-app.get('/messages', async (req, res, next) => {
+// 一覧は誰でも読めないよう、portal の「環境変数」で設定した ADMIN_TOKEN が必要です(未設定なら常に 401)。
+// 例: curl -H 'Authorization: Bearer <ADMIN_TOKEN>' https://<プレフィックス>.com-intro.com/messages
+function requireAdmin(req, res, next) {
+  const token = process.env.ADMIN_TOKEN || '';
+  const given = (req.get('authorization') || '').replace(/^Bearer /, '');
+  const a = crypto.createHash('sha256').update(given).digest();
+  const b = crypto.createHash('sha256').update(token).digest();
+  if (!token || !crypto.timingSafeEqual(a, b)) return res.status(401).json({ error: 'unauthorized' });
+  next();
+}
+
+app.get('/messages', requireAdmin, async (req, res, next) => {
   if (!pool) return res.status(503).json({ error: 'database_not_configured' });
   try {
     const { rows } = await pool.query('SELECT id, body, created_at FROM messages ORDER BY id DESC LIMIT 20');

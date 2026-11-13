@@ -20,9 +20,11 @@ Express + PostgreSQL(`pg`)の小さなひな形です。`<プレフィックス>
 - `server.js` — `npm start`。起動時にマイグレーション(`messages` テーブルを作成)を実行してから `$PORT` で待ち受けます。`GET /` は 200 を返します。
 - `db.js` — 接続とマイグレーション。`DATABASE_URL` が無い場合はログを出して DB 機能だけ無効になります(アプリは起動します)。
 - `job.js` — `npm run job`。portal の「定期実行」に登録できるサンプル(30 日より古い行を削除)。
-- `GET /messages` / `POST /messages` — テーブルの読み書き例。
+- `GET /messages` / `POST /messages` — テーブルの読み書き例。`POST` は誰でも書き込めます。`GET`(一覧)は `Authorization: Bearer <ADMIN_TOKEN>` が必要で、portal の「環境変数」で `ADMIN_TOKEN` を設定するまでは常に 401 です。
 
-ローカルで試す場合: `DATABASE_URL=postgres://… npm start`
+> 実際のお問い合わせなどを保存する前に、読み出し側の認証と `job.js` の削除条件を自分の用途に合わせて見直してください。`job.js` は「定期実行」に登録したときだけ動き、削除した行は元に戻せません。
+
+ローカルで試す場合: `DATABASE_URL=postgres://… ADMIN_TOKEN=dev npm start`
 
 詳しい説明: https://portal.com-intro.com/dev/docs/node
 
@@ -54,8 +56,10 @@ Express + PostgreSQL(`pg`)の小さなひな形です。`<プレフィックス>
 - `server.js` — `npm start`。启动时先执行迁移(创建 `messages` 表),然后监听 `$PORT`。`GET /` 返回 200。
 - `db.js` — 连接与迁移。没有 `DATABASE_URL` 时会输出日志并仅停用数据库功能(应用仍会启动)。
 - `job.js` — `npm run job`。可登记到 portal「定期执行」的示例(删除 30 天前的行)。
-- `GET /messages` / `POST /messages` — 读写该表的示例。
+- `GET /messages` / `POST /messages` — 读写该表的示例。`POST` 任何人都可写入。`GET`(列表)需要 `Authorization: Bearer <ADMIN_TOKEN>`,在 portal「环境变量」里设置 `ADMIN_TOKEN` 之前一律返回 401。
 
-本地试用: `DATABASE_URL=postgres://… npm start`
+> 保存真实的咨询等数据之前,请按自己的用途检查读取端的认证和 `job.js` 的删除条件。`job.js` 只有登记到「定期执行」后才会运行,删除的行无法恢复。
+
+本地试用: `DATABASE_URL=postgres://… ADMIN_TOKEN=dev npm start`
 
 详细说明: https://portal.com-intro.com/dev/docs/zh/node
