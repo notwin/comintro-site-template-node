@@ -1,0 +1,16 @@
+{
+  "name": "comintro-site-template-node",
+  "version": "1.0.0",
+  "private": true,
+  "description": "COM INTRO Node アプリのテンプレート(Express + PostgreSQL)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "job": "node job.js"
+  },
+  "engines": { "node": ">=22" },
+  "dependencies": {
+    "express": "^4.21.2",
+    "pg": "^8.13.1"
+  }
+}
